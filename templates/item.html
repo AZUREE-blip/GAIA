@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ item.name }} - Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Gabarito, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .item-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="item-container">
+        <h1>{{ item.name }}</h1>
+        <img src="{{ item.image_url }}" alt="{{ item.name }}">
+        <p class="price">Price: {{ item.price }} {{ currency }}</p>
+
+        <!-- Add to Cart Form -->
+        <form action="{{ url_for('add_to_cart') }}" method="POST">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" min="1" value="1" required>
+            <button type="submit">Add to Cart</button>
+        </form>
+
+        <a href="{{ url_for('gallery') }}" class="back-link">Back to Gallery</a>
+    </div>
+</body>
+</html>
+

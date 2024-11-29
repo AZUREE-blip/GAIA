@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Gabarito&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Gabarito', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0070ba;
+        }
+        .paypal-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ heading }}</h1>
+        <div class="paypal-button-container">
+            <div id="paypal-button-container"></div>
+        </div>
+    </div>
+
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return fetch('http://localhost:8080/create-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: {{ total }}  // Replace with the actual amount
+                    })
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(orderData) {
+                    return orderData.orderID;
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>

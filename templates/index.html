@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAIA - Store</title>
+    <a href="{{ url_for('gallery') }}">View Our Collection</a>
+    <style>
+        body {
+            font-family: Gabarito, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+       }
+        /* Popup overlay styling */
+        #popup-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <!-- Popup overlay -->
+    <div id="popup-overlay">
+        <div id="popup">
+            <h2>Select Your Location</h2>
+            <form id="currency-form">
+                <label for="currency">Choose your currency:</label>
+                <select id="currency" name="currency" required>
+                    <option value="SEK">Swedish Krona (SEK)</option>
+                    <option value="USD">US Dollar (USD)</option>
+                    <option value="EUR">Euro (EUR)</option>
+                    <option value="GBP">British Pound (GBP)</option>
+                    <option value="CAD">Canadian Dollar (CAD)</option>
+                </select>
+                <button type="submit">Set Currency</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <h1>Welcome to the Store</h1>
+
+    <!-- Form to add item to cart -->
+    <form action="/add_to_cart" method="POST">
+        <label for="item">Enter Item:</label>
+        <input type="text" id="item" name="item" placeholder="Item name" required>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" placeholder="Quantity" min="1" required>
+
+        <!-- Add to Cart button -->
+        <button type="submit">Add to Cart</button>
+    </form>
+
+    <!-- Link to view the cart -->
+    <a href="/cart">Go to Cart</a>
+
+    <!-- JavaScript for popup behavior -->
+    <script>
+        // Show popup on page load
+        window.onload = function() {
+            if (!localStorage.getItem("currency")) {
+                document.getElementById("popup-overlay").style.display = "block";
+            }
+        };
+
+        // Handle currency selection
+        document.getElementById("currency-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const selectedCurrency = document.getElementById("currency").value;
+
+            // Store currency in local storage and close popup
+            localStorage.setItem("currency", selectedCurrency);
+
+            // Send currency to the backend
+            fetch("/set_currency", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ currency: selectedCurrency })
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById("popup-overlay").style.display = "none";
+                    location.reload(); // Reload to apply currency settings
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

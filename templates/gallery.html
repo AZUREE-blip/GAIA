@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category }} Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Gabarito, Arial;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding-top: 20px;
+        }
+        .item-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .item-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .item-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .item-card a {
+            text-decoration: none;
+            color: #333;
+        }
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ category }} Collection</h1>
+    <div class="gallery-container">
+        {% for item in items %}
+            <div class="item-card">
+                <a href="{{ url_for('view_item', item_id=item['id']) }}">
+                    <img src="{{ item['image_url'] }}" alt="{{ item['name'] }}">
+                    <h3>{{ item['name'] }}</h3>
+                    <p>{{ item['price'] }} {{ currency }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('landing') }}" class="back-link">Back to Collections</a>
+</body>
+</html>
+
+
+
